@@ -6,6 +6,7 @@
 #include "CComPtr.h"
 #include "ILRewriter.h"
 #include "profiler_pal.h"
+#include <string>
 
 static void STDMETHODCALLTYPE Enter(FunctionID functionId)
 {
@@ -37,7 +38,7 @@ CorProfiler::~CorProfiler()
 
 HRESULT STDMETHODCALLTYPE CorProfiler::Initialize(IUnknown *pICorProfilerInfoUnk)
 {
-    HRESULT queryInterfaceResult = pICorProfilerInfoUnk->QueryInterface(__uuidof(ICorProfilerInfo7), reinterpret_cast<void **>(&this->corProfilerInfo));
+    HRESULT queryInterfaceResult = pICorProfilerInfoUnk->QueryInterface(__uuidof(ICorProfilerInfo8), reinterpret_cast<void **>(&this->corProfilerInfo));
 
     if (FAILED(queryInterfaceResult))
     {
@@ -512,5 +513,17 @@ HRESULT STDMETHODCALLTYPE CorProfiler::GetAssemblyReferences(const WCHAR *wszAss
 
 HRESULT STDMETHODCALLTYPE CorProfiler::ModuleInMemorySymbolsUpdated(ModuleID moduleId)
 {
+    return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CorProfiler::DynamicMethodJITCompilationStarted(FunctionID functionId, BOOL fIsSafeToBlock, LPCBYTE ilHeader, ULONG cbILHeader)
+{
+    printf("\r\nDynamic Function JIT Compilation Started. %" UINT_PTR_FORMAT "", (UINT64)functionId);
+    return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CorProfiler::DynamicMethodJITCompilationFinished(FunctionID functionId, HRESULT hrStatus, BOOL fIsSafeToBlock)
+{
+    printf("\r\nDynamic Function JIT Compilation Finished. %" UINT_PTR_FORMAT "", (UINT64)functionId);
     return S_OK;
 }
